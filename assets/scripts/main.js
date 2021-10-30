@@ -32,6 +32,16 @@ async function init() {
 
 async function fetchRecipes() {
   return new Promise((resolve, reject) => {
+    recipes.forEach(recipe => {
+      fetch(recipe).then(response => response.json()).then(data => {
+        recipeData.append(data);
+      }).catch((error) => {
+        reject(false);
+      });
+    });
+    if(recipeData.length == recipes.length){
+      resolve(true);
+    }
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
     // Once you have that data, store it in the 'recipeData' object. You can use whatever you like
