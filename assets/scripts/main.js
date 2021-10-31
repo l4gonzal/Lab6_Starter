@@ -19,6 +19,7 @@ window.addEventListener('DOMContentLoaded', init);
 async function init() {
   // fetch the recipes and wait for them to load
   let fetchSuccessful = await fetchRecipes();
+  console.log(recipeData);
   // if they didn't successfully load, quit the function
   if (!fetchSuccessful) {
     console.log('Recipe fetch unsuccessful');
@@ -32,22 +33,20 @@ async function init() {
 
 async function fetchRecipes() {
   return new Promise((resolve, reject) => {
-    recipes.forEach(recipe =>{
-      fetch(recipe)
-      .then(response=>response.json())
-      .then(data => {recipeData['${recipe}'] = data
-      console.log(recipeData['${recipe}'])
+    for(let i = 0; i < recipes.length; i ++){
+      fetch(recipes[i])
+      .then(response => response.json())
+      .then(data =>{
+        recipeData[recipes[i]] = data;
+        //console.log(data);
+        //console.log(recipeData[recipes[i]])
+        if(Object.keys(recipeData).length == recipes.length){
+          resolve(true);
+        }
       })
-      .catch(error =>{
-        reject(false);
-      })
-    });
-    if(Object.keys(recipeData).length == recipes.length){
-      resolve(true);
+      .catch(error => {reject(false)})
     }
-    else{
-      return;
-    }
+    //console.log(Object.keys(recipeData).length);
   });
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
@@ -70,6 +69,15 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+  for(let i = 0; i < recipes.length; i++){
+    //console.log();
+    let ele = document.querySelector("main")
+    let recCard = document.createElement("recipe-data");
+    recCard.data = recipeData[recipes[i]];
+    //console.log(recCard.data);
+    ele.appendChild(recCard);
+  }
+
 }
 
 function bindShowMore() {
