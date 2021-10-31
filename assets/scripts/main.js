@@ -32,16 +32,23 @@ async function init() {
 
 async function fetchRecipes() {
   return new Promise((resolve, reject) => {
-    recipes.forEach(recipe => {
-      fetch(recipe).then(response => response.json()).then(data => {
-        recipeData.append(data);
-      }).catch((error) => {
+    recipes.forEach(recipe =>{
+      fetch(recipe)
+      .then(response=>response.json())
+      .then(data => {recipeData['${recipe}'] = data
+      console.log(recipeData['${recipe}'])
+      })
+      .catch(error =>{
         reject(false);
-      });
+      })
     });
-    if(recipeData.length == recipes.length){
+    if(Object.keys(recipeData).length == recipes.length){
       resolve(true);
     }
+    else{
+      return;
+    }
+  });
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
     // Once you have that data, store it in the 'recipeData' object. You can use whatever you like
@@ -53,7 +60,6 @@ async function fetchRecipes() {
     // in the recipes folder and fetch them from there. You'll need to add their paths to the recipes array.
 
     // Part 1 Expose - TODO
-  });
 }
 
 function createRecipeCards() {
