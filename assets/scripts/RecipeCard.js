@@ -1,8 +1,9 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
     // You'll want to attach the shadow DOM here
+    var shadow = this.attachShadow({mode: 'open'});
   }
 
   set data(data) {
@@ -87,6 +88,52 @@ class RecipeCard extends HTMLElement {
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
+    let myImg = document.createElement('img');
+    myImg.setAttribute('src', searchForKey(data,'thumbnailUrl'));
+    myImg.setAttribute('alt', "Recipe Title");
+    card.appendChild(myImg);
+
+    let titleP = document.createElement('p');
+    titleP.classList.add("title");
+    let title = document.createElement('a');
+    let titleUrl = searchForKey(data, 'mainEntityOfPage');
+    if(typeof titleUrl === 'object'){//if object
+      titleUrl = searchForKey(titleUrl, '@id');
+    }
+    title.setAttribute('href', titleUrl);
+    title.setAttribute('innerHTML', searchForKey(data, 'headline'));
+    titleP.appendChild(title);
+    card.appendChild(titleP);
+    
+    let orgP = document.createElement('p');
+    orgP.classList.add("organization");
+    orgP.setAttribute('innerHTML', getOrganization(data));
+    card.appendChild(orgP);
+
+    let ratingDiv = document.createElement('div');
+    ratingDiv.classList.add("rating");
+    //no reviews if ratingValue == null
+    let ratingSpan = document.createElement('span');
+    ratingSpan.setAttribute('innerHTML', "No Reviews");
+    //with reviews...
+    ratingDiv.appendChild(ratingSpan);
+    card.appendChild(ratingDiv);
+    //img: assets\images\icons\...
+    //use Math.round
+
+    let myTime = document.createElement('time');
+    myTime.setAttribute('innerHTML', convertTime(searchForKey(data, 'totalTime')));
+    card.appendChild(myTime);
+
+    let ingredients = document.createElement('p');
+    ingredients.classList.add("ingredients");
+    let ingredientArr = searchForKey(data, 'recipeIngredient');
+    let ingredientList = createIngredientList(ingredientArr);
+    ingredients.setAttribute('innerHTML', ingredientList);
+    
+    
+    this.shadowRoot.appendChild(card);
+    this.shadowRoot.appendChild(styleElem);
 
     // Some functions that will be helpful here:
     //    document.createElement()

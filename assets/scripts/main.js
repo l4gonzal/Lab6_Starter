@@ -32,15 +32,21 @@ async function init() {
 
 async function fetchRecipes() {
   return new Promise((resolve, reject) => {
-    recipes.forEach(recipe => {
-      fetch(recipe).then(response => response.json()).then(data => {
-        recipeData.append(data);
-      }).catch((error) => {
+    recipes.forEach(recipe =>{
+      fetch(recipe)
+      .then(response=>response.json())
+      .then(data => {recipeData['${recipe}'] = data
+      console.log(recipeData['${recipe}'])
+      })
+      .catch(error =>{
         reject(false);
-      });
+      })
     });
-    if(recipeData.length == recipes.length){
+    if(Object.keys(recipeData).length == recipes.length){
       resolve(true);
+    }
+    else{
+      return;
     }
     // This function is called for you up above
     // From this function, you are going to fetch each of the recipes in the 'recipes' array above.
@@ -64,6 +70,13 @@ function createRecipeCards() {
   // show any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
+
+  recipeData.forEach(recipe =>{
+    const recCard = document.createElement('recipe-card');
+    const ele = document.querySelector('main');
+    recCard.data = recipe;
+    ele.appendChild(recCard);
+  })
 }
 
 function bindShowMore() {
